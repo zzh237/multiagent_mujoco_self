@@ -155,6 +155,12 @@ class MujocoMulti(MultiAgentEnv):
             qpos = np.zeros((s1,))
             qpos[s2:] = state[:s1-s2]
             qvel = state[s1-s2:]
+        if self.scenario == "Walker2d-v2":
+            s1 = 9
+            s2 = 1 
+            qpos = np.zeros((s1,))
+            qpos[s2:] = state[:s1-s2]
+            qvel = state[s1-s2:]
         
         state = {'qpos':qpos, 'qvel':qvel}
         obs = [] 
