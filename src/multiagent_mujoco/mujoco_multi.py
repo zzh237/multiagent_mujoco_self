@@ -207,7 +207,8 @@ class MujocoMulti(MultiAgentEnv):
         self.env.render(**kwargs)
 
     def close(self):
-        raise NotImplementedError
+        # raise NotImplementedError
+        self.evn.close()
 
     def seed(self, args):
         pass
