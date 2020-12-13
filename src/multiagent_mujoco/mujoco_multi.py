@@ -52,7 +52,7 @@ class MujocoMulti(MultiAgentEnv):
                     self.k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
                 elif self.scenario in ["Reacher-v2"]:
                     self.k_categories_label = "qpos,qvel,fingertip_dist|qpos"
-                if self.scenario in ["coupled_half_cheetah"]:
+                elif self.scenario in ["coupled_half_cheetah"]:
                     self.k_categories_label = "qpos,qvel,ten_J,ten_length,ten_velocity|"
                 else:
                     self.k_categories_label = "qpos,qvel|qpos"
@@ -149,20 +149,34 @@ class MujocoMulti(MultiAgentEnv):
             qpos = np.zeros((9,))
             qpos[1:] = state[:8]
             qvel = state[8:]
+            state = {'qpos':qpos, 'qvel':qvel}
         if self.scenario == "Swimmer-v2":
             s1 = 5
             s2 = 2 
             qpos = np.zeros((s1,))
             qpos[s2:] = state[:s1-s2]
             qvel = state[s1-s2:]
+            state = {'qpos':qpos, 'qvel':qvel}
+
         if self.scenario == "Walker2d-v2":
             s1 = 9
             s2 = 1 
             qpos = np.zeros((s1,))
             qpos[s2:] = state[:s1-s2]
             qvel = state[s1-s2:]
+            state = {'qpos':qpos, 'qvel':qvel}
+
+        if self.scenario == "Ant-v2": #15-2+14+14*6
+            s1 = 15
+            s2 = 2
+            s3 = 14 
+            qpos = np.zeros((s1,))
+            qpos[s2:] = state[:s1-s2]
+            qvel = state[s1-s2:s1-s2+s3]
+            cfrc_ext = state[s1-s2+s3:]
+            cftc_ext = np.array(cfrc_ext).reshape((14,6))
+            state = {'qpos':qpos, 'qvel':qvel, 'cftc_ext':cftc_ext}
         
-        state = {'qpos':qpos, 'qvel':qvel}
         obs = [] 
         for agent_id in range(self.n_agents):
             ob = build_obs(self.env,
